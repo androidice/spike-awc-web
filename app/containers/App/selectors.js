@@ -1,3 +1,11 @@
+/*
+* App selector
+*
+* */
+import { createSelector } from 'reselect';
+
+const selectGlobal = (state) => state.get('global');
+
 // makeSelectLocationState expects a plain JS object for the routing state
 const makeSelectLocationState = () => {
   let prevRoutingState;
