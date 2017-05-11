@@ -19,25 +19,64 @@ export default function createRoutes(store) {
   return [
     {
       path: '/',
-      name: 'dashBoardPage',
-      getComponent(nextState, cb) {
+      name: 'mainPage',
+      getComponent(nextState, cb){
         const importModules = Promise.all([
-        import('containers/DashBoardPage/reducer'),
-        import('containers/DashBoardPage/sagas'),
-        import('containers/DashBoardPage'),
+        import('containers/MainPage/reducer'),
+        import('containers/MainPage/sagas'),
+        import('containers/MainPage'),
       ]);
-
         const renderRoute = loadModule(cb);
 
         importModules.then(([reducer, sagas, component]) => {
-          injectReducer('dashBoardPage', reducer.default);
+          injectReducer('mainPage', reducer.default);
           injectSagas(sagas.default);
           renderRoute(component);
         });
 
         importModules.catch(errorLoading);
       },
-    }, {
+      indexRoute: {
+        getComponent: (partialNextState, cb) =>{
+          const importModules = Promise.all([
+          import('containers/DashBoardPage/reducer'),
+          import('containers/DashBoardPage/sagas'),
+          import('containers/DashBoardPage'),
+          ]);
+
+          const renderRoute = loadModule(cb);
+          importModules.then(([reducer, sagas, component]) => {
+            injectReducer('dashBoardPage', reducer.default);
+            injectSagas(sagas.default)
+            renderRoute(component);
+          });
+
+          importModules.catch(errorLoading);
+        }
+      },
+      childRoutes:[{
+          path:'/orders',
+          name: 'orders',
+          getComponent:(nextState, cb)=>{
+            const importModules = Promise.all([
+            import('containers/OrdersPage/reducer'),
+            import('containers/OrdersPage/sagas'),
+            import('containers/OrdersPage'),
+            ]);
+
+            const renderRoute = loadModule(cb);
+
+            importModules.then(([reducer, sagas, component]) => {
+              injectReducer('ordersPage', reducer.default);
+              injectSagas(sagas.default)
+              renderRoute(component);
+            });
+
+            importModules.catch(errorLoading);
+          }
+      }]
+    },
+     {
       path: '/auth/login',
       name: 'loginPage',
       getComponent(nextState, cb) {
@@ -58,7 +97,7 @@ export default function createRoutes(store) {
         importModules.catch(errorLoading);
       },
     },
-      {
+       {
       path: '*',
       name: 'notfound',
       getComponent(nextState, cb) {

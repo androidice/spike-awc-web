@@ -19,7 +19,6 @@ const makeSelectOrdersPage = () => createSelector(
   (substate) => substate.toJS()
 );
 
-export default makeSelectOrdersPage;
 export {
   selectOrdersPageDomain,
 };
